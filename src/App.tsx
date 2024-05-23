@@ -1,7 +1,14 @@
+import './global.css'
+
+import { Helmet, HelmetProvider } from 'react-helmet-async'
+import { RouterProvider } from 'react-router-dom'
+
+import { router } from './pages/routes'
 export function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <HelmetProvider>
+      <Helmet titleTemplate="%s | pizza.shop" />
+      <RouterProvider router={router} />
+    </HelmetProvider>
   )
 }
