@@ -1,43 +1,41 @@
 import { useQuery } from '@tanstack/react-query'
-import { DollarSign } from 'lucide-react'
+import { Utensils } from 'lucide-react'
 
-import { getMonthCanceledOrdersAmount } from '@/api/get-month-canceled-orders-amount'
+import { getMonthOrdersAmount } from '@/api/get-month-orders-amount'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-export function MonthCancelled() {
-  const { data: monthCanceledOrders } = useQuery({
-    queryFn: getMonthCanceledOrdersAmount,
-    queryKey: ['metrics', 'month-canceled-orders-amount'],
+export function OrdersAmount() {
+  const { data: monthOrdersAmount } = useQuery({
+    queryFn: getMonthOrdersAmount,
+    queryKey: ['metrics', 'month-orders-amount'],
   })
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-base font-semibold">
-          Cancelamentos no mes
+          Pedidos no mes
         </CardTitle>
-        <DollarSign className="h-4 w-4 text-muted-foreground"></DollarSign>
+        <Utensils className="h-4 w-4 text-muted-foreground"></Utensils>
       </CardHeader>
-
       <CardContent className="space-y-1">
-        {monthCanceledOrders && (
+        {monthOrdersAmount && (
           <>
             <span className="text-2xl font-bold tracking-tight">
-              {monthCanceledOrders.amount.toLocaleString('pt-BR', {
+              {monthOrdersAmount.amount.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
               })}
             </span>
             <p className="text-sm text-muted-foreground">
-              {monthCanceledOrders.diffFromLastMonth < 0 ? (
+              {monthOrdersAmount.diffFromLastMonth >= 0 ? (
                 <>
                   <span className="text-emerald-500 dark:text-emerald-400">
-                    {monthCanceledOrders.diffFromLastMonth}%
+                    +{monthOrdersAmount.diffFromLastMonth}%
                   </span>{' '}
-                  em relação ao mes passado
                 </>
               ) : (
                 <>
                   <span className="text-rose-500 dark:text-rose-400">
-                    +{monthCanceledOrders.diffFromLastMonth}%
+                    {monthOrdersAmount.diffFromLastMonth}
                   </span>{' '}
                 </>
               )}

@@ -2,8 +2,8 @@ import { Helmet } from 'react-helmet-async'
 
 import { DayOrders } from './day-orders'
 import { MonthCancelled } from './month-cancelled'
+import { OrdersAmount } from './month-orders-amount'
 import { MonthRevenue } from './month-revenue'
-import { OrdersAmount } from './orders-amount'
 import { PopularProductChart } from './popular-product-chart'
 import { RevenueChart } from './revenue-chart'
 
