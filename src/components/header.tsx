@@ -1,5 +1,5 @@
 import { Separator } from '@radix-ui/react-separator'
-import { Home, Pizza, UtensilsCrossed } from 'lucide-react'
+import { Home, RectangleVertical, UtensilsCrossed } from 'lucide-react'
 
 import { AccountMenu } from './account-menu'
 import { NavLink } from './nav-link'
@@ -9,7 +9,7 @@ export function Header() {
   return (
     <div className="border-b">
       <div className="flex h-16 items-center gap-6 px-6">
-        <Pizza className="h-6 w-6" />
+        <RectangleVertical className="h-6 w-6" color="yellow" fill="yellow" />
         <Separator className="h-6" orientation="vertical" />
 
         <nav className="flex items-center space-x-4 lg:space-x-6">

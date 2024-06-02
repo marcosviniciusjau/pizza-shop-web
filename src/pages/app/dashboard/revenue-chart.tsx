@@ -46,7 +46,7 @@ export function RevenueChart() {
   }, [dailyRevenueInPeriod])
   return (
     <Card className="col-span-6">
-      <CardHeader className="flex-row items-center justify-between space-y-0 pb-8">
+      <CardHeader className="flex-row items-center justify-between pb-8">
         <div className="space-y-1">
           <CardTitle className="text-base font-medium">
             Receita no período
