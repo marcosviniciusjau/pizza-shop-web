@@ -14,4 +14,7 @@ The API is from a course on Rocketseat made using the PostgreSQL image on Docker
 
 - Metrics showing Graphics using Rechart
 
-Here is a demo video of the web application:
+# Here is a demo video of the web application:
+
+https://github.com/marcosviniciusjau/pizza-shop-web/assets/82465988/ddb240f8-9623-4469-a66b-5b34ae9e9518
+
