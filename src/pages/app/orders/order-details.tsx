@@ -63,12 +63,6 @@ export function OrderDetails({ orderId, open }: OrderDetailsProps) {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="text-muted-foreground">Email</TableCell>
-                <TableCell className="flex justify-end">
-                  {order.customer.email}
-                </TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell className="text-muted-foreground">
                   Realizado há
                 </TableCell>

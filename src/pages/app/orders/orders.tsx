@@ -38,14 +38,12 @@ export function Orders() {
         status: status === 'all' ? null : status,
       }),
   })
-
   function handlePaginate(pageIndex: number) {
     setSearchParams((state) => {
       state.set('page', (pageIndex + 1).toString())
       return state
     })
   }
-
   return (
     <>
       <Helmet title="orders" />

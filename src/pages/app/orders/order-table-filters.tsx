@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog'
 import { Search, X } from 'lucide-react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
@@ -14,6 +16,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+import { NewOrder } from './new-order'
+
 const orderFiltersSchema = z.object({
   orderId: z.string().optional(),
   customerName: z.string().optional(),
@@ -23,6 +27,7 @@ const orderFiltersSchema = z.object({
 type OrderFiltersSchema = z.infer<typeof orderFiltersSchema>
 
 export function OrderTableFilters() {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
 
   const orderId = searchParams.get('orderId')
@@ -138,6 +143,15 @@ export function OrderTableFilters() {
         <X className="mr-2 h-4 w-4" />
         Remover filtros
       </Button>
+
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogTrigger asChild>
+          <Button variant="success" size="xs">
+            <span>Novo pedido</span>
+          </Button>
+        </DialogTrigger>
+        <NewOrder />
+      </Dialog>
     </form>
   )
 }
