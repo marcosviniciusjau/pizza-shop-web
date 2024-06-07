@@ -117,17 +117,16 @@ export function NewOrder() {
   async function handleCreateOrder(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     try {
-      let customerId = selectedClient?.id
+      let customerId = selectedClient ? selectedClient.id : null
+
+      // If the customer does not exist, register the customer
       if (!hasCustomer) {
-        const newCustomer = await registerCustomer({
-          name: searchTerm,
-          phone: customerPhone,
-        })
-        customerId = newCustomer.id
+        customerId = searchTerm
       }
 
       await createOrder({
         customerId,
+        customerName: searchTerm,
         items: orderItems.map((item: OrderItems) => ({
           productId: item.productId,
           quantity: item.quantity,
@@ -137,8 +136,6 @@ export function NewOrder() {
 
       toast.success('Pedido criado com sucesso')
     } catch (error) {
-      console.log(orderItems)
-      console.log(selectedClient)
       toast.error('Erro ao criar pedido')
     }
   }
