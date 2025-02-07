@@ -1,12 +1,14 @@
-import { useQuery } from '@tanstack/react-query'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { TrashIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import * as z from 'zod'
 
 import { createOrder, OrderItems } from '@/api/create-order'
 import { getCustomers } from '@/api/get-customers'
-import { GetOrdersResponse } from '@/api/get-orders'
-import { getProducts, GetProductsResponse } from '@/api/get-products'
+import { getProducts } from '@/api/get-products'
 import { registerCustomer } from '@/api/register-customer'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,7 +34,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+const orderSchema = z.object({
+  customerName: z.string(),
+  customerPhone: z.string().optional(),
+  orderItems: z
+    .object({
+      productId: z.string(),
+      quantity: z.number(),
+      category: z.enum(['pastries', 'beverages', 'savory snacks']),
+    })
+    .array(),
+})
 
+type OrderSchema = z.infer<typeof orderSchema>
 export function NewOrder() {
   const { data: products } = useQuery({
     queryKey: ['get-products'],
@@ -43,7 +57,24 @@ export function NewOrder() {
     queryKey: ['get-customers'],
     queryFn: getCustomers,
   })
-
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<OrderSchema>({
+    resolver: zodResolver(orderSchema),
+    defaultValues: {
+      customerName: '',
+      customerPhone: '',
+      orderItems: [],
+    },
+  })
+  const { mutateAsync: createOrderFn } = useMutation({
+    mutationFn: createOrder,
+  })
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [customerPhone, setCustomerPhone] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
@@ -52,7 +83,7 @@ export function NewOrder() {
     { productId: '', quantity: 1, category: '', price: 100, subtotal: 100 },
   ]
 
-  const handleSelectChange = (index, value, category) => {
+  const handleSelectChange = (index: number, value: string, category) => {
     const selectedProduct = products?.find((product) => product.name === value)
     const newOrderItems = [...orderItems]
     newOrderItems[index] = {
@@ -65,7 +96,7 @@ export function NewOrder() {
     setOrderItems(newOrderItems)
   }
 
-  const handleQuantityChange = (index, quantity) => {
+  const handleQuantityChange = (index: number, quantity: number) => {
     const newOrderItems = [...orderItems]
     newOrderItems[index] = {
       ...newOrderItems[index],
@@ -76,9 +107,6 @@ export function NewOrder() {
   }
 
   const handleAddRow = (category) => {
-    if (category === null) {
-      category = 'pastries'
-    }
     setOrderItems([
       ...orderItems,
       { productId: '', quantity: 1, category, price: 0, subtotal: 0 },
@@ -114,17 +142,20 @@ export function NewOrder() {
     setIsDropdownOpen(false)
   }
 
-  async function handleCreateOrder(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  async function handleCreateOrder() {
     try {
       let customerId = selectedClient ? selectedClient.id : null
+      const newCustomer = await registerCustomer({
+        name: searchTerm,
+        phone: customerPhone,
+      })
+      customerId = newCustomer.id
 
-      // If the customer does not exist, register the customer
       if (!hasCustomer) {
         customerId = searchTerm
       }
 
-      await createOrder({
+      await createOrderFn({
         customerId,
         customerName: searchTerm,
         items: orderItems.map((item: OrderItems) => ({
@@ -148,7 +179,7 @@ export function NewOrder() {
       </DialogHeader>
 
       <div className="space-y-6">
-        <form onSubmit={handleCreateOrder}>
+        <form onSubmit={handleSubmit(handleCreateOrder)}>
           <Table>
             <TableBody>
               <TableRow>
@@ -293,7 +324,11 @@ export function NewOrder() {
           </div>
 
           <div className="mt-4 flex justify-center">
-            <Button type="submit" className="w-32 justify-center">
+            <Button
+              type="submit"
+              className="w-32 justify-center"
+              disabled={isSubmitting}
+            >
               Finalizar
             </Button>
           </div>

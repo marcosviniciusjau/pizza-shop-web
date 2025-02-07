@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios'
 
-interface CustomerRequest {
+export interface CustomerRequest {
   name: string
   phone?: string
 }
