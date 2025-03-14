@@ -83,39 +83,126 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
       },
     })
   return (
-    <TableRow>
-      <TableCell>
-        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="xs">
-              <Search className="h-3 w-3" />
-              <span className="sr-only">Detalhes do pedido</span>
-            </Button>
-          </DialogTrigger>
-          <OrderDetails open={isDetailsOpen} orderId={order.orderId} />
-        </Dialog>
-      </TableCell>
-      <TableCell className="font-mono text-xs font-medium">
-        {order.orderId}
-      </TableCell>
-      <TableCell className="text-muted-foreground">
+<>
+  {/* DESKTOP */}
+  <TableRow className="hidden md:table-row">
+    <TableCell>
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="xs">
+            <Search className="h-3 w-3" />
+            <span className="sr-only">Detalhes do pedido</span>
+          </Button>
+        </DialogTrigger>
+        <OrderDetails open={isDetailsOpen} orderId={order.orderId} />
+      </Dialog>
+    </TableCell>
+    <TableCell className="font-mono text-xs font-medium">
+      {order.orderId}
+    </TableCell>
+    <TableCell className="text-muted-foreground">
+      {formatDistanceToNow(new Date(order.createdAt), {
+        locale: ptBR,
+        addSuffix: true,
+      })}
+    </TableCell>
+    <TableCell>
+      <OrderStatus status={order.status} />
+    </TableCell>
+    <TableCell className="font-medium">{order.customerName}</TableCell>
+    <TableCell className="font-medium">
+      {(order.total / 100).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      })}
+    </TableCell>
+    <TableCell>
+      {order.status === 'pending' && (
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={() => approveOrderFn({ orderId: order.orderId })}
+          disabled={isApprovingOrder}
+        >
+          <ArrowRight className="mr-2 h-3 w-3" />
+          Aprovar
+        </Button>
+      )}
+
+      {order.status === 'processing' && (
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={() => dispatchOrderFn({ orderId: order.orderId })}
+          disabled={isDispatchingOrder}
+        >
+          <ArrowRight className="mr-2 h-3 w-3" />
+          Em entrega
+        </Button>
+      )}
+
+      {order.status === 'delivering' && (
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={() => deliverOrderFn({ orderId: order.orderId })}
+          disabled={isDeliveringOrder}
+        >
+          <ArrowRight className="mr-2 h-3 w-3" />
+          Entregue
+        </Button>
+      )}
+    </TableCell>
+    <TableCell>
+      <Button
+        disabled={
+          !['pending', 'processing'].includes(order.status) ||
+          isCancellingOrder
+        }
+        onClick={() => cancelOrderFn({ orderId: order.orderId })}
+        variant="ghost"
+        size="xs"
+      >
+        <X className="mr-2 h-3 w-3" />
+        Cancelar
+      </Button>
+    </TableCell>
+  </TableRow>
+
+  {/* MOBILE */}
+  <div className="flex flex-col gap-2 rounded-md border p-4 md:hidden">
+    <div className="flex justify-between items-center">
+      <div className="text-xs text-muted-foreground">
         {formatDistanceToNow(new Date(order.createdAt), {
           locale: ptBR,
           addSuffix: true,
         })}
-      </TableCell>
-      <TableCell>
-        <OrderStatus status={order.status} />
-      </TableCell>
-      <TableCell className="font-medium">{order.customerName}</TableCell>
-      <TableCell className="font-medium">
+      </div>
+      <OrderStatus status={order.status} />
+    </div>
+
+    <div className="flex justify-between items-center">
+      <div className="text-sm font-medium">{order.customerName}</div>
+      <div className="text-sm font-medium">
         {(order.total / 100).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         })}
-      </TableCell>
-      <TableCell>
-        {order.status === 'pending' && (
+      </div>
+    </div>
+
+    <div className="flex gap-2 justify-end">
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="xs">
+            <Search className="h-3 w-3" />
+          </Button>
+        </DialogTrigger>
+        <OrderDetails open={isDetailsOpen} orderId={order.orderId} />
+      </Dialog>
+
+      {order.status === 'pending' && (
+        <>
           <Button
             variant="outline"
             size="xs"
@@ -125,46 +212,48 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
             <ArrowRight className="mr-2 h-3 w-3" />
             Aprovar
           </Button>
-        )}
 
-        {order.status === 'processing' && (
           <Button
-            variant="outline"
+            variant="ghost"
             size="xs"
-            onClick={() => dispatchOrderFn({ orderId: order.orderId })}
-            disabled={isDispatchingOrder}
+            disabled={
+              !['pending', 'processing'].includes(order.status) ||
+              isCancellingOrder
+            }
+            onClick={() => cancelOrderFn({ orderId: order.orderId })}
           >
-            <ArrowRight className="mr-2 h-3 w-3" />
-            Em entrega
+            <X className="mr-2 h-3 w-3" />
+            Cancelar
           </Button>
-        )}
+        </>
+      )}
 
-        {order.status === 'delivering' && (
-          <Button
-            variant="outline"
-            size="xs"
-            onClick={() => deliverOrderFn({ orderId: order.orderId })}
-            disabled={isDeliveringOrder}
-          >
-            <ArrowRight className="mr-2 h-3 w-3" />
-            Entregue
-          </Button>
-        )}
-      </TableCell>
-      <TableCell>
+      {order.status === 'processing' && (
         <Button
-          disabled={
-            !['pending', 'processing'].includes(order.status) ||
-            isCancellingOrder
-          }
-          onClick={() => cancelOrderFn({ orderId: order.orderId })}
-          variant="ghost"
+          variant="outline"
           size="xs"
+          onClick={() => dispatchOrderFn({ orderId: order.orderId })}
+          disabled={isDispatchingOrder}
         >
-          <X className="mr-2 h-3 w-3" />
-          Cancelar
+          <ArrowRight className="mr-2 h-3 w-3" />
+          Em entrega
         </Button>
-      </TableCell>
-    </TableRow>
+      )}
+
+      {order.status === 'delivering' && (
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={() => deliverOrderFn({ orderId: order.orderId })}
+          disabled={isDeliveringOrder}
+        >
+          <ArrowRight className="mr-2 h-3 w-3" />
+          Entregue
+        </Button>
+      )}
+    </div>
+  </div>
+</>
+
   )
 }
