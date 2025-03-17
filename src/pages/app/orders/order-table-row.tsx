@@ -20,14 +20,15 @@ export interface OrderTableRowProps {
     orderId: string
     createdAt: string
     status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
-    customerName: string
+    productName: string
+    quantity: number
     total: number
   }
 }
 export function OrderTableRow({ order }: OrderTableRowProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const queryClient = useQueryClient()
-
+  console.log(order)
   function updateOrderStatusOnCache(orderId: string, status: OrderStatus) {
     const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
       queryKey: ['orders'],
@@ -109,7 +110,8 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
     <TableCell>
       <OrderStatus status={order.status} />
     </TableCell>
-    <TableCell className="font-medium">{order.customerName}</TableCell>
+    <TableCell className="font-medium">{order.productName}</TableCell>
+    <TableCell className="font-medium">{order.quantity}</TableCell>
     <TableCell className="font-medium">
       {(order.total / 100).toLocaleString('pt-BR', {
         style: 'currency',
@@ -182,7 +184,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
     </div>
 
     <div className="flex justify-between items-center">
-      <div className="text-sm font-medium">{order.customerName}</div>
+      <div className="text-sm font-medium">{order.productName}</div>
       <div className="text-sm font-medium">
         {(order.total / 100).toLocaleString('pt-BR', {
           style: 'currency',
