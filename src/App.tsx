@@ -8,7 +8,7 @@ import { Toaster } from 'sonner'
 import { ThemeProvider } from './components/theme/theme-provider'
 import { queryClient } from './lib/react-query'
 import { router } from './pages/routes'
-export function App() {
+export default function App() {
   return (
     <HelmetProvider>
       <ThemeProvider storageKey="pizza-shop-theme" defaultTheme="dark">
