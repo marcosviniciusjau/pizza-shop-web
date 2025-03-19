@@ -18,7 +18,6 @@ import { OrderTableRow } from "./order-table-row";
 
 export function Orders() {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const orderId = searchParams.get("orderId");
   const customerName = searchParams.get("customerName");
   const status = searchParams.get("status");
@@ -38,6 +37,7 @@ export function Orders() {
         status: status === "all" ? null : status,
       }),
   });
+
   function handlePaginate(pageIndex: number) {
     setSearchParams((state) => {
       state.set("page", (pageIndex + 1).toString());
@@ -60,9 +60,11 @@ export function Orders() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[64px]">Status</TableHead>
-                  <TableHead className="w-[140px]">Pedido</TableHead>
+                  <TableHead className="w-[140px]">ID do Pedido</TableHead>
                   <TableHead className="w-[180px]">Cliente</TableHead>
                   <TableHead className="w-[140px]">Realizado há</TableHead>
+                  <TableHead className="w-[140px]">Pedido</TableHead>
+                  <TableHead className="w-[140px]">Quantidade</TableHead>
                   <TableHead className="w-[140px]">Total do pedido</TableHead>
                 </TableRow>
               </TableHeader>

@@ -24,5 +24,6 @@ export interface GetOrderDetailsResponse {
 }
 export async function getOrdersDetails({ orderId }: GetOrdersDetailsParams) {
   const response = await api.get<GetOrderDetailsResponse>(`/orders/${orderId}`)
+  console.log("para de dar erro idiota", response.data)
   return response.data
 }

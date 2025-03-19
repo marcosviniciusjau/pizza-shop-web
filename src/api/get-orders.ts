@@ -13,6 +13,7 @@ export interface GetOrdersResponse {
     status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
     customerName: string
     total: number
+    quantity: number
   }[]
   meta: {
     pageIndex: number
