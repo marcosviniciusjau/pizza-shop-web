@@ -13,8 +13,8 @@ export function AppLayout() {
       (response) => response,
       (error) => {
         if (isAxiosError(error)) {
-          const status = error.response?.status
-          const code = error.response?.data.code
+          //const status = error.response?.status
+         // const code = error.response?.data.code
         }
       },
     )

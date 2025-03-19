@@ -1,5 +1,5 @@
 import { Separator } from "@radix-ui/react-separator";
-import { Home, Pizza, RectangleVertical, UtensilsCrossed } from "lucide-react";
+import { Home, Pizza, UtensilsCrossed } from "lucide-react";
 
 import { AccountMenu } from "./account-menu";
 import { NavLink } from "./nav-link";
